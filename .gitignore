@@ -2,12 +2,7 @@
 .DS_Store
 
 # depend
-.husky
 node_modules
 
-# log
-pnpm-debug.log*
-
 # build
-dist
-dist_electron
+release

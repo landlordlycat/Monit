@@ -1,38 +1,43 @@
 /*
  * @Author: fzf404
  * @Date: 2022-05-18 23:06:12
- * @LastEditors: fzf404 nmdfzf404@163.com
- * @LastEditTime: 2022-09-17 20:03:54
+ * @LastEditors: fzf404 me@fzf404.art
+ * @LastEditTime: 2023-04-17 21:23:15
  * @Description: axios 封装
  */
 
 import axios from 'axios'
 
-import { useStore } from '@/store'
+import { main } from '@/pinia'
 
-const store = useStore()
+// 初始化全局状态
+const pinia = main()
 
+// 初始化请求
 const request = (url: string) => {
-  // axios 实例
+  // 请求实例
   const service = axios.create({
-    baseURL: url, // 基本路径
+    baseURL: url, // 基础路径
     timeout: 30000, // 超时时间
-    withCredentials: true, // 携带 Cookie
+    withCredentials: true // 携带 Cookie
   })
 
   // 响应拦截
   service.interceptors.response.use(
     (res) => {
       // 响应成功
-      store.network = true
+      pinia.online()
       // 返回数据
-      return res.data
+      return Promise.resolve(res.data)
     },
     (err) => {
-      // 请求错误
-      store.network = false
+      // 响应失败
+      pinia.offline()
+      // 返回错误
+      return Promise.reject(err)
     }
   )
+
   return service
 }
 

@@ -1,8 +1,8 @@
 /*
  * @Author: fzf404
  * @Date: 2022-07-19 17:36:05
- * @LastEditors: fzf404 nmdfzf404@163.com
- * @LastEditTime: 2022-08-09 11:16:03
+ * @LastEditors: fzf404 me@fzf404.art
+ * @LastEditTime: 2023-04-17 21:39:26
  * @Description: 角色跟踪
  */
 
@@ -11,10 +11,9 @@ import Holistic from '@mediapipe/holistic'
 
 /**
  * @description: 绘制跟踪结果
- * @param {HTMLCanvasElement} canvas
- * @param {HTMLVideoElement} video
- * @param {Holistic} results
- * @return {*}
+ * @param { HTMLCanvasElement } canvas 绘制元素
+ * @param { HTMLVideoElement } video 视频元素
+ * @param { Holistic } results 跟踪结果
  */
 export const drawResults = (canvas: HTMLCanvasElement, video: HTMLVideoElement, results: Holistic.Results): void => {
   canvas.width = video.videoWidth
@@ -51,7 +50,7 @@ export const drawResults = (canvas: HTMLCanvasElement, video: HTMLVideoElement, 
       lineWidth: 2,
       radius: (data: DrawingUtils.Data) => {
         return DrawingUtils.lerp(data.from!.z!, -0.15, 0.1, 10, 1)
-      },
+      }
     })
 
     // 右手连接线
@@ -63,7 +62,7 @@ export const drawResults = (canvas: HTMLCanvasElement, video: HTMLVideoElement, 
       lineWidth: 2,
       radius: (data: DrawingUtils.Data) => {
         return DrawingUtils.lerp(data.from!.z!, -0.15, 0.1, 10, 1)
-      },
+      }
     })
   }
 
@@ -74,31 +73,31 @@ export const drawResults = (canvas: HTMLCanvasElement, video: HTMLVideoElement, 
     // 面部网格
     DrawingUtils.drawConnectors(ctx, results.faceLandmarks, Holistic.FACEMESH_TESSELATION, {
       color: '#C0C0C070',
-      lineWidth: 1,
+      lineWidth: 1
     })
 
     // 眼睛眉毛
     DrawingUtils.drawConnectors(ctx, results.faceLandmarks, Holistic.FACEMESH_RIGHT_EYE, {
-      color: 'rgb(0,217,231)',
+      color: 'rgb(0,217,231)'
     })
     DrawingUtils.drawConnectors(ctx, results.faceLandmarks, Holistic.FACEMESH_RIGHT_EYEBROW, {
-      color: 'rgb(0,217,231)',
+      color: 'rgb(0,217,231)'
     })
     DrawingUtils.drawConnectors(ctx, results.faceLandmarks, Holistic.FACEMESH_LEFT_EYE, {
-      color: 'rgb(255,138,0)',
+      color: 'rgb(255,138,0)'
     })
     DrawingUtils.drawConnectors(ctx, results.faceLandmarks, Holistic.FACEMESH_LEFT_EYEBROW, {
-      color: 'rgb(255,138,0)',
+      color: 'rgb(255,138,0)'
     })
 
     // 轮廓
     DrawingUtils.drawConnectors(ctx, results.faceLandmarks, Holistic.FACEMESH_FACE_OVAL, {
       color: '#E0E0E0',
-      lineWidth: 4,
+      lineWidth: 4
     })
     DrawingUtils.drawConnectors(ctx, results.faceLandmarks, Holistic.FACEMESH_LIPS, {
       color: '#E0E0E0',
-      lineWidth: 4,
+      lineWidth: 4
     })
   }
 
@@ -113,41 +112,49 @@ export const drawResults = (canvas: HTMLCanvasElement, video: HTMLVideoElement, 
 }
 
 /**
- * @description: 初始化 Holistic 实例
- * @param {HTMLCanvasElement} canvas
- * @param {HTMLVideoElement} video
- * @return {*}
+ * @description: 初始化角色跟踪
+ * @param { HTMLCanvasElement } canvas 绘制元素
+ * @param { HTMLVideoElement } video 视频元素
+ * @return { Promise<number> } 实例状态
  */
 export const initHolistic = async (canvas: HTMLCanvasElement, video: HTMLVideoElement): Promise<number> => {
-  // Holistic 配置
+  // 角色跟踪配置
   const config: Holistic.HolisticConfig = {
     locateFile: (file) => {
       return `https://cdn.jsdelivr.net/npm/electron-mediapipe-holistic@1.0.2/${file}`
-    },
+    }
   }
 
-  // Holistic 实例
+  // 角色跟踪实例
   const holistic = new Holistic.Holistic(config)
 
-  // Holistic 选项
+  // 角色跟踪选项
   holistic.setOptions({
     modelComplexity: 1,
     smoothLandmarks: true,
     minDetectionConfidence: 0.7,
     minTrackingConfidence: 0.7,
-    refineFaceLandmarks: true,
+    refineFaceLandmarks: true
   })
 
-  // Holistic 回调
+  // 角色跟踪回调
   holistic.onResults((result: Holistic.Results) => {
     drawResults(canvas, video, result)
   })
 
-  // 发送视频流
-  const sendVideo = async () => {
-    await holistic.send({ image: video })
-    return requestAnimationFrame(sendVideo)
-  }
-
-  return sendVideo()
+  // 角色跟踪启动
+  return new Promise((resolve, reject) => {
+    // 发送视频流
+    const sendVideo = () => {
+      holistic
+        .send({ image: video })
+        .then(() => {
+          return resolve(requestAnimationFrame(sendVideo))
+        })
+        .catch((err) => {
+          return reject(err)
+        })
+    }
+    return sendVideo()
+  })
 }

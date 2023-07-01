@@ -1,74 +1,63 @@
 <!--
  * @Author: fzf404
  * @Date: 2022-05-23 17:03:20
- * @LastEditors: fzf404 nmdfzf404@163.com
- * @LastEditTime: 2022-10-03 14:30:45
+ * @LastEditors: fzf404 me@fzf404.art
+ * @LastEditTime: 2023-04-01 15:26:58
  * @Description: maco 布局
 -->
+
 <template>
-  <nav>
-    <ul class="absolute z-40 left-2 space-x-1">
+  <nav class="z-50">
+    <!-- 窗口控制器 -->
+    <ul class="absolute left-2 space-x-1">
       <!-- 关闭 -->
       <CloseSVG
-        class="w-3.5 p-0.5 btn-svg rounded-full bg-red-400 hover:bg-red-500 text-dark"
-        @click="sendEvent('win-close')"
-      />
+        class="btn-svg text-dark w-3.5 rounded-full bg-red-400 p-0.5 hover:bg-red-500"
+        @click="sendEvent('plugin-close')" />
       <!-- 最小化 -->
       <MiniSVG
-        class="w-3.5 p-0.5 btn-svg rounded-full bg-yellow-400 hover:bg-yellow-500 text-dark"
-        @click="sendEvent('win-mini')"
-      />
+        class="btn-svg text-dark w-3.5 rounded-full bg-yellow-400 p-0.5 hover:bg-yellow-500"
+        @click="sendEvent('plugin-mini')" />
       <!-- 置顶 -->
       <UpSVG
-        class="w-3.5 p-0.5 btn-svg rounded-full bg-green-400 hover:bg-green-500 text-dark"
-        :class="{ 'rotate-180': state.top }"
-        @click="state.top = !state.top"
-      />
+        class="btn-svg text-dark w-3.5 rounded-full bg-green-400 p-0.5 hover:bg-green-500"
+        :class="{ 'rotate-180': !store.top }"
+        @click="store.top = !store.top" />
     </ul>
     <!-- 状态控制器 -->
-    <ul class="absolute right-2 z-40 space-x-1">
+    <ul class="absolute right-2 space-x-1">
       <!-- 断网提示 -->
-      <WifiSVG v-show="!store.network" class="w-4 btn-svg text-red-400" />
+      <WifiSVG v-show="!pinia.hasNetwork" class="btn-svg w-4 text-red-400 hover:text-red-500" />
       <!-- 布局 -->
-      <MacoSVG class="w-4 btn-svg text-cyan-500 hover:text-cyan-600" @click="state.layout = 'wine'" />
+      <component
+        :is="layout.icon"
+        class="btn-svg w-4 text-green-400 hover:text-green-500"
+        @click="store.layout = layout.next" />
       <!-- 主题 -->
-      <LightSVG
-        v-if="state.theme === 'dark'"
-        class="w-4 btn-svg text-orange-400 hover:text-orange-500"
-        @click="state.theme = 'light'"
-      />
-      <PunkSVG
-        v-else-if="state.theme === 'light'"
-        class="w-4 btn-svg text-yellow-300 hover:text-yellow-400"
-        @click="state.theme = 'punk'"
-      />
-      <DarkSVG v-else class="w-4 btn-svg text-indigo-300 hover:text-indigo-400" @click="state.theme = 'dark'" />
+      <component :is="theme.icon" class="btn-svg icon-theme w-4" @click="store.theme = theme.next" />
       <!-- 设置 -->
-      <SettingSVG v-show="store.setting.has" class="w-4 btn-svg text-blue-400" @click="store.setting.show = true" />
+      <SettingSVG
+        v-show="pinia.hasSetting"
+        class="btn-svg w-4 text-blue-400 hover:text-blue-500"
+        @click="pinia.toggleSetting()" />
     </ul>
   </nav>
 </template>
 
 <script setup>
-import { sendEvent } from '#/ipc'
-import { useStore } from '@/store'
+import { sendEvent } from '~/event/send'
+
+import { main } from '@/pinia'
 
 import CloseSVG from '@/assets/layout/close.svg'
 import MiniSVG from '@/assets/layout/mini.svg'
-import UpSVG from '@/assets/layout/up.svg'
-
-import MacoSVG from '@/assets/layout/maco.svg'
-
-import DarkSVG from '@/assets/layout/dark.svg'
-import LightSVG from '@/assets/layout/light.svg'
-import PunkSVG from '@/assets/layout/punk.svg'
-
 import SettingSVG from '@/assets/layout/setting.svg'
+import UpSVG from '@/assets/layout/up.svg'
 import WifiSVG from '@/assets/layout/wifi.svg'
 
-// 初始化 props
-const props = defineProps(['state'])
+// 初始化全局状态
+const pinia = main()
 
-// 初始化 store
-const store = useStore()
+// 初始化插件值
+defineProps(['layout', 'theme', 'store'])
 </script>

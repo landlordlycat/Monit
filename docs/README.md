@@ -1,71 +1,62 @@
 <!--
-
  * @Author: fzf404
  * @Date: 2022-06-18 17:15:15
- * @LastEditors: fzf404 nmdfzf404@163.com
- * @LastEditTime: 2022-10-10 18:46:17
+ * @LastEditors: fzf404 me@fzf404.art
+ * @LastEditTime: 2023-04-20 21:22:19
  * @Description: 应用介绍
 -->
 
 <p align="center">
-  <a href="https://monit.fzf404.art" target="_blank">
-    <img src="https://cdn.jsdelivr.net/gh/fzf404/image/Monit/logo.webp" alt="Monit" style="zoom:60%;"/>
+  <a href="https://monit.fzf404.art/" target="_blank">
+    <img src="https://img.fzf404.art/Monit/logo.webp" alt="Monit" style="zoom:40%;"/>
   </a>
 </p>
 
-<p align="center">
- 用于展示各种信息的桌面小组件
-</p>
+<p align="center">用于展示各种信息的桌面小组件</p>
 
 <p align="center">
   <a href="https://github.com/fzf404/Monit"> Github </a> ｜
-  <a href="https://monit.fzf404.art"> Home </a> ｜
+  <a href="https://monit.fzf404.art/"> Website </a> ｜
+  <a href="https://cloud.fzf404.art/release/monit"> Mirror </a> ｜
   <a href="https://github.com/fzf404/Monit/releases"> Download </a>
 </p>
 
 <p align="center">
-  <img src="https://cdn.jsdelivr.net/gh/fzf404/image/Monit/v0.7.0.webp" alt="show" style="zoom:40%;" />
+  <img src="https://img.fzf404.art/Monit/v0.7.0.webp" alt="show" style="zoom:30%;" />
 </p>
 
 ## ✨ 功能
 
-> VueC 指 Composition API，VueO 指 Options API
+> 支持开机自启、更新检查、主题切换、通知发送、系统调用等功能。
 >
 > 更多请前往：[使用指南](https://monit.fzf404.art/#/zh/01-guide) & [开发指南](https://monit.fzf404.art/#/zh/03-develop)
 
-| 插件名   | 功能              | 技术                         | 贡献                                  | 状态 |
-| -------- | ----------------- | ---------------------------- | ------------------------------------- | ---- |
-| welcome  | 使用指引          | Vue Composition API          | [fzf404](https://github.com/fzf404)   | ✅   |
-| count    | 计数器            | Vue Options API              | [fzf404](https://github.com/fzf404)   | ✅   |
-| github   | github 信息监控   | VueO + Axios + Grid          | [fzf404](https://github.com/fzf404)   | ✅   |
-| clock    | 时钟翻牌器        | VueC + Scss + Keyframes      | [fzf404](https://github.com/fzf404)   | ✅   |
-| todo     | 待办事项管理      | VueC + Pug + Draggable       | [fzf404](https://github.com/fzf404)   | ✅   |
-| camera   | 相机监控          | VueC + Canvas + MediaPipe    | [fzf404](https://github.com/fzf404)   | ✅   |
-| juejin   | 掘金信息监控      | VueO + Axios + Grid          | [Ned](https://github.com/wangenze267) | ✅   |
-| image    | 图像展示          | VueC + IPC + Dialog          | [fzf404](https://github.com/fzf404)   | ✅   |
-| music    | 网易云音乐播放    | VueC + Audio                 | [fzf404](https://github.com/fzf404)   | ✅   |
-| live2d   | 虚拟角色跟踪      | VueC + Kalidokit + MediaPipe |                                       | ⛔️  |
-| bilibili | bilibili 信息监控 |                              |                                       | ⛔️  |
-| weather  | 天气信息监控      |                              |                                       | ⛔️  |
-| course   | 课程表信息        |                              |                                       | ⛔️  |
+| 插件        | 功能         | 技术                         | 贡献                                  | 状态 |
+| ----------- | ------------ | ---------------------------- | ------------------------------------- | ---- |
+| 👏 guide    | 用户指引     | Vue Composition API          | [fzf404](https://github.com/fzf404)   | ✅   |
+| 🔘 count    | 计数器       | Vue Options API              | [fzf404](https://github.com/fzf404)   | ✅   |
+| 😺 github   | 信息监控     | VueO + Axios + Grid          | [fzf404](https://github.com/fzf404)   | ✅   |
+| ⏱️ clock    | 翻牌时钟     | VueC + Scss + Keyframes      | [fzf404](https://github.com/fzf404)   | ✅   |
+| 📝 todo     | 待办事项管理 | VueC + Pug + Draggable       | [fzf404](https://github.com/fzf404)   | ✅   |
+| 📷 camera   | 相机助手     | VueC + Canvas + MediaPipe    | [fzf404](https://github.com/fzf404)   | ✅   |
+| 🏅 juejin   | 信息监控     | VueO + Axios + Grid          | [Ned](https://github.com/wangenze267) | ✅   |
+| 🏞️ image    | 图像展示     | VueC + IPC + Dialog          | [fzf404](https://github.com/fzf404)   | ✅   |
+| 🎵 music    | 网易云音乐   | VueC + Axios + Audio         | [fzf404](https://github.com/fzf404)   | ✅   |
+| 💬 chat     | 问答机器人   | VueC + Axios + OpenAI        | [fzf404](https://github.com/fzf404)   | ⛔️  |
+| 🤖 vtube    | 虚拟角色跟踪 | VueC + Kalidokit + MediaPipe | [fzf404](https://github.com/fzf404)   | ⛔️  |
+| 📺 bilibili | 信息监控     |                              |                                       | ⛔️  |
+| ⛅ weather  | 信息监控     |                              |                                       | ⛔️  |
+| 📅 course   | 课程表信息   |                              |                                       | ⛔️  |
 
 ## 🎁 安装
 
-> 使用 Github Action 自动打包，无需担心安全问题
+> 使用 Github Action 自动打包，无需担心安全问题。
 >
-> 前往 [Release](https://github.com/fzf404/Monit/releases) 寻找操作系统对应的安装包
+> 前往 [Release](https://github.com/fzf404/Monit/releases) / [Mirror](https://cloud.fzf404.art/release/monit) 寻找操作系统对应的安装包。
 
-- Windows
+- MacOS
 
-  > 全功能支持
-
-- Linux
-
-  > 开机自启功能可能会失效
-
-- Mac
-
-  > 由于没有 Apple 开发者账号，打开时如出现 `Monit.app 已损坏`，请执行如下指令
+  > 由于没有 Apple 开发者账号，打开时如出现 `Monit.app 已损坏`，请执行如下指令：
 
   ```bash
   sudo xattr -rd com.apple.quarantine /Applications/Monit.app
@@ -73,4 +64,4 @@
 
 ## ⭐ 标星
 
-![Star History Chart](https://api.star-history.com/svg?repos=fzf404/Monit&type=Date)
+![Star](https://api.star-history.com/svg?repos=fzf404/Monit&type=Date)

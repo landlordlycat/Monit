@@ -1,26 +1,57 @@
 /*
  * @Author: fzf404
  * @Date: 2022-07-20 10:21:27
- * @LastEditors: fzf404 nmdfzf404@163.com
- * @LastEditTime: 2022-10-16 21:02:16
+ * @LastEditors: fzf404 me@fzf404.art
+ * @LastEditTime: 2023-04-17 21:22:40
  * @Description: camera 工具
  */
 
 /**
- * @description: 拍照
- * @param {HTMLVideoElement} video
- * @param {HTMLCanvasElement} canvas
- * @param {HTMLAnchorElement} record
- * @return {*}
+ * @description: 获取媒体列表
+ * @return { Promise<MediaDeviceInfo[]> } 媒体列表
  */
-export const takePhoto = (video: HTMLVideoElement, canvas: HTMLCanvasElement, record: HTMLAnchorElement): void => {
+export const getCameraList = async (): Promise<MediaDeviceInfo[]> => {
+  // 获取媒体列表
+  const devices = await navigator.mediaDevices.enumerateDevices()
+  // 过滤视频设备
+  return devices.filter((device) => device.kind === 'videoinput')
+}
+
+/**
+ * @description: 初始化相机
+ * @param { string } deviceId 设备编号
+ * @param { HTMLVideoElement } video 视频元素
+ ≈
+ */
+export const initCamera = async (deviceId: string, video: HTMLVideoElement): Promise<MediaStream> => {
+  // 获取媒体流
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: {
+      deviceId: deviceId
+    }
+  })
+  // 验证媒体流
+  if (!stream) throw new Error('stream is null')
+  // 设置视频源
+  video.srcObject = stream
+  // 返回媒体流
+  return stream
+}
+
+/**
+ * @description: 拍照
+ * @param { HTMLVideoElement } video 视频元素
+ * @param { HTMLCanvasElement } canvas 绘制元素
+ * @param { HTMLAnchorElement } record 记录元素
+ */
+export const takePhoto = (video: HTMLVideoElement, canvas: HTMLCanvasElement, record: HTMLAnchorElement) => {
   // 设置画布信息
   canvas.width = video.videoWidth
   canvas.height = video.videoHeight
 
   // 获取画布上下文
   const ctx = canvas.getContext('2d')
-  if (!ctx) return
+  if (!ctx) throw new Error('canvas cotext is null')
 
   // 绘制画布
   ctx.drawImage(video, 0, 0)
@@ -36,19 +67,22 @@ export const takePhoto = (video: HTMLVideoElement, canvas: HTMLCanvasElement, re
 }
 
 /**
- * @description: 录像
- * @param {string} device
- * @param {HTMLAnchorElement} record
- * @return {*}
+ * @description: 录制
+ * @param { string } deviceId 设备编号
+ * @param { HTMLAnchorElement } record 记录元素
+ * @return { Promise<MediaRecorder> } 录制对象
  */
-export const recordVideo = async (device: string, record: HTMLAnchorElement): Promise<MediaRecorder> => {
+export const recordVideo = async (deviceId: string, record: HTMLAnchorElement): Promise<MediaRecorder> => {
   // 获取相机
   const stream = await navigator.mediaDevices.getUserMedia({
     video: {
-      deviceId: device,
+      deviceId: deviceId
     },
-    audio: true,
+    audio: true
   })
+
+  // 验证媒体流
+  if (!stream) throw new Error('stream is null')
 
   // 创建记录器
   const recorder = new MediaRecorder(stream)
@@ -64,9 +98,10 @@ export const recordVideo = async (device: string, record: HTMLAnchorElement): Pr
   recorder.onstop = () => {
     stream.getTracks().forEach((track) => track.stop())
   }
-  
-  // 开始
+
+  // 开始记录
   recorder.start()
 
+  // 返回记录器
   return recorder
 }

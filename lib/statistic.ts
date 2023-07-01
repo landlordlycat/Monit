@@ -1,44 +1,38 @@
 /*
  * @Author: fzf404
  * @Date: 2022-05-18 23:06:12
- * @LastEditors: fzf404 nmdfzf404@163.com
- * @LastEditTime: 2022-09-12 00:42:39
- * @Description: 数值分析
+ * @LastEditors: fzf404 me@fzf404.art
+ * @LastEditTime: 2023-04-02 23:57:16
+ * @Description: statistic 数据分析
  */
-
-// 仓库模型
-interface repo {
-  repo: string
-  star: number
-  fork: number
-}
 
 /**
  * @description: 获取两个数组间的差集
- * @param {*} arr1
- * @param {*} arr2
- * @return {*}
+ * @param { Array<T> } source 源数组
+ * @param { Array<T> } target 目标数组
+ * @return { Array<T> } 数组差集
  */
-export const getArrDiff = <T>(arr1: Array<T>, arr2: Array<T>): Array<T> => {
-  return arr2.filter((items) => {
-    return !arr1.some((item) => {
-      return JSON.stringify(items) === JSON.stringify(item)
-    })
-  })
+export const getArrDiff = <T>(source: Array<T>, target: Array<T>): Array<T> => {
+  return target.filter((item) => !source.includes(item))
 }
 
 /**
- * @description: 获取两个数组间的某个 key 的差集
- * @param {*} arr1
- * @param {*} arr2
- * @param {string} source
- * @param {string} target
- * @return {*}
+ * @description: 获取两个数组间的某个值的差集
+ * @param { Array<T> } sourceArray 源数组
+ * @param { Array<T> } targetArray 目标数组
+ * @param { keyof T } sourceKey 源数组的某个值
+ * @param { keyof T } targetKey 目标数组的某个值
+ * @return { Array<T> } 数组差集
  */
-export const getArrDiffKey = <T>(arr1: Array<T>, arr2: Array<T>, source: keyof T, target: keyof T): Array<T> => {
-  return arr2.filter((items) => {
-    return !arr1.some((item) => {
-      return items[source] === item[source] && items[target] === item[target]
+export const getArrDiffKey = <T>(
+  sourceArray: Array<T>,
+  targetArray: Array<T>,
+  sourceKey: keyof T,
+  targetKey: keyof T
+): Array<T> => {
+  return targetArray.filter((target) => {
+    return !sourceArray.some((source) => {
+      return target[sourceKey] === source[sourceKey] && target[targetKey] === source[targetKey]
     })
   })
 }

@@ -1,13 +1,18 @@
 {
   "recommendations": [
-    "obkoro1.korofileheader",
     "vue.volar",
-    "vue.vscode-typescript-vue-plugin",
-    "syler.sass-indented",
+    "jaluik.dot-log",
     "gruntfuggly.todo-tree",
     "chunsen.bracket-select",
+    "obkoro1.korofileheader",
+    "pranaygp.vscode-css-peek",
     "bradlc.vscode-tailwindcss",
+    "sdras.vue-vscode-snippets",
+    "aaron-bond.better-comments",
     "formulahendry.auto-close-tag",
-    "formulahendry.auto-rename-tag"
+    "formulahendry.auto-rename-tag",
+    "vue.vscode-typescript-vue-plugin",
+    "meganrogge.template-string-converter",
+    "gencer.html-slim-scss-css-class-completion"
   ]
 }

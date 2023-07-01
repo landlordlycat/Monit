@@ -1,15 +1,16 @@
 <!--
  * @Author: fzf404
  * @Date: 2022-06-10 09:12:28
- * @LastEditors: fzf404 nmdfzf404@163.com
- * @LastEditTime: 2022-10-02 21:35:17
+ * @LastEditors: fzf404 me@fzf404.art
+ * @LastEditTime: 2023-04-17 21:02:24
  * @Description: clock 翻牌时钟
 -->
+
 <template>
   <!-- 页面内容 -->
-  <article class="flex-col-center space-y-6">
+  <article class="flex-col-center gap-6">
     <!-- 翻牌器 -->
-    <section class="flex-row-center mt-6 space-x-1.5">
+    <section class="flex-row-center mt-6 gap-1.5">
       <!-- 时 -->
       <ul class="flip down">
         <li class="digital front n-0"></li>
@@ -19,7 +20,7 @@
         <div class="digital front n-0"></div>
         <div class="digital back n-0"></div>
       </div>
-      <span class="text-4xl">:</span>
+      <span class="text-secondary text-4xl">:</span>
       <!-- 分 -->
       <div class="flip down">
         <div class="digital front n-0"></div>
@@ -29,7 +30,7 @@
         <div class="digital front n-0"></div>
         <div class="digital back n-0"></div>
       </div>
-      <span class="text-4xl">:</span>
+      <span class="text-secondary text-4xl">:</span>
       <!-- 秒 -->
       <div class="flip down">
         <div class="digital front n-0"></div>
@@ -43,15 +44,15 @@
     <!-- 控制器 -->
     <section class="space-x-4">
       <!-- 时钟模式 -->
-      <button class="btn btn-md btn-blue" @click="startClock">
+      <button class="btn btn-lg btn-blue" @click="startClock">
         <ClockSVG class="w-6" />
       </button>
       <!-- 计时模式 -->
       <transition name="fade" mode="out-in">
-        <button v-if="!timing" class="btn btn-md btn-purple" @click="startTiming">
+        <button v-if="!timing" class="btn btn-lg btn-purple" @click="startTiming">
           <TimerSVG class="w-6" />
         </button>
-        <button v-else class="btn btn-md bg-red-500 hover:bg-red-600" @click="stop">
+        <button v-else class="btn btn-lg btn-red" @click="stop">
           <OffSVG class="w-6" />
         </button>
       </transition>
@@ -62,66 +63,76 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 
-import ClockSVG from '@/assets/clock/clock.svg'
-import OffSVG from '@/assets/clock/off.svg'
-import TimerSVG from '@/assets/clock/timer.svg'
+import ClockSVG from '@/assets/plugin/clock/clock.svg'
+import OffSVG from '@/assets/plugin/clock/off.svg'
+import TimerSVG from '@/assets/plugin/clock/timer.svg'
 
 // 翻牌状态
 let fliping = [false, false, false, false, false, false]
 
-// setInterval() 回调
-let interval = null
+// 停止回调
+let callback = null
 
-// 上次翻牌数字
+// 历史数字记录
 let old = '000000'
 
 /**
- * @description: 对其中一位数字进行翻牌
- * @param {*} digit 第几位数字
- * @param {*} num 修改成的数字
- * @return {*}
+ * @description: 数字翻牌
+ * @param {*} digit 数字位数
+ * @param {*} num 修改结果
  */
 const changeNumber = (digit, num) => {
-  // 翻转中则返回
+  // 判断翻转状态
   if (fliping[digit]) return
 
   // 设置翻牌状态
   fliping[digit] = true
 
-  // 获取 DOM
+  // 获取元素
   const flip = document.querySelectorAll('.flip')[digit]
   const front = document.querySelectorAll('.front')[digit]
   const back = document.querySelectorAll('.back')[digit]
 
-  // 更改数字 & 启动动画
+  // 更改数字
   back.setAttribute('class', `digital back n-${num}`)
+  // 开启动画
   flip.classList.add('go')
 
-  // 延时 600ms 停止动画 & 修改前面数字
+  // 延时停止动画
   setTimeout(() => {
+    // 停止动画
     flip.classList.remove('go')
+    // 修改数字
     front.setAttribute('class', `digital front n-${num}`)
-    // 翻转结束
+    // 设置翻牌状态
     fliping[digit] = false
   }, 600)
 }
 
+// 更新时间
+const changeClock = (time) => {
+  // 遍历时间字符串
+  for (let i = 0, len = time.length; i < len; i++) {
+    // 判断数字是否修改
+    if (time[i] !== old[i]) {
+      // 修改翻牌器数字
+      changeNumber(i, time[i])
+    }
+  }
+}
+
 // 开启时钟
 const startClock = () => {
-  // 停止 setInterval()
-  interval && clearInterval(interval)
+  // 停止回调
+  callback && clearInterval(callback)
 
-  // 每秒获取最新时间
-  interval = setInterval(() => {
+  // 每秒更新计时
+  callback = setInterval(() => {
+    // 获取当前时间
     const time = new Date().toLocaleTimeString('zh-CN').replace(/\:/g, '')
     // 遍历时间字符串
-    for (let i = 0, len = time.length; i < len; i++) {
-      // 判断数字是否修改
-      if (time[i] !== old[i]) {
-        // 修改翻牌器数字
-        changeNumber(i, time[i])
-      }
-    }
+    changeClock(time)
+    // 保存旧数字
     old = time
   }, 1000)
 }
@@ -134,13 +145,13 @@ const numToStr = (num, length) => {
   return numToStr('0' + num, length)
 }
 
-// 是否正在计时
+// 计时功能状态
 const timing = ref(false)
 
 // 开启计时
 const startTiming = () => {
-  // 停止 setInterval()
-  interval && clearInterval(interval)
+  // 停止回调
+  callback && clearInterval(callback)
 
   // 开启计时
   timing.value = true
@@ -148,34 +159,35 @@ const startTiming = () => {
   const start = new Date().getTime()
 
   // 每秒更新计时
-  interval = setInterval(() => {
+  callback = setInterval(() => {
+    // 获取差值
     const diff = new Date().getTime() - start
 
+    // 计算计时时间
     const hour = diff % (24 * 3600 * 1000)
     const minute = hour % (3600 * 1000)
     const second = minute % (60 * 1000)
 
+    // 拼接为列表
     const time = [Math.floor(hour / (3600 * 1000)), Math.floor(minute / (60 * 1000)), Math.floor(second / 1000)]
 
     // 转为字符串
     const timeStr = numToStr(time[0], 2) + numToStr(time[1], 2) + numToStr(time[2], 2)
 
-    // 遍历时间字符串
-    for (let i = 0, len = timeStr.length; i < len; i++) {
-      // 判断数字是否修改
-      if (timeStr[i] !== old[i]) {
-        // 修改翻牌器数字
-        changeNumber(i, timeStr[i])
-      }
-    }
+    // 更改时钟数字
+    changeClock(timeStr)
+
+    // 保存旧数字
     old = timeStr
   }, 1000)
 }
 
 // 停止计时
 const stop = () => {
+  // 修改计时状态
   timing.value = false
-  interval && clearInterval(interval)
+  // 停止回调函数
+  callback && clearInterval(callback)
 }
 
 // 挂载后执行
@@ -185,25 +197,25 @@ onMounted(startClock)
 <style scoped>
 /* 底板 */
 .flip {
-  @apply relative inline-block w-12 h-20 rounded-lg border-2 bg-gray-300 border-gray-400  text-gray-500 font-mono text-6xl text-center;
+  @apply relative inline-block h-20 w-12 rounded-lg border-2 border-gray-400 bg-gray-300  text-center font-mono text-6xl text-gray-500;
   line-height: 5rem;
 }
 /* 上下页 */
 .flip .digital:before,
 .flip .digital:after {
   content: '';
-  @apply absolute left-0 right-0 bg-gray-200 overflow-hidden;
+  @apply absolute left-0 right-0 overflow-hidden bg-gray-200;
 }
 
 /* 上页 */
 .flip .digital:before {
-  @apply top-0 bottom-1/2 rounded-t-lg border-b border-gray-400;
+  @apply bottom-1/2 top-0 rounded-t-lg border-b border-gray-400;
 }
 
 /* 下页 */
 .flip .digital:after {
   line-height: 0;
-  @apply top-1/2 bottom-0 rounded-b-lg border-t border-gray-400;
+  @apply bottom-0 top-1/2 rounded-b-lg border-t border-gray-400;
 }
 
 /* 下翻 */
@@ -212,8 +224,8 @@ onMounted(startClock)
 }
 
 .flip.down .back:after {
+  transform: rotateX(180deg);
   transform-origin: 50% 0%;
-  transform: perspective(160px) rotateX(180deg);
   @apply z-20;
 }
 
@@ -224,8 +236,8 @@ onMounted(startClock)
 
 .flip.down.go .front:before {
   transform-origin: 50% 100%;
-  animation: frontFlipDown 0.6s ease-in-out both;
   backface-visibility: hidden;
+  animation: frontFlipDown 0.6s ease-in-out both;
   @apply shadow-xl;
 }
 
@@ -239,8 +251,8 @@ onMounted(startClock)
 }
 
 .flip.up .back:before {
+  transform: rotateX(-180deg);
   transform-origin: 50% 100%;
-  transform: perspective(160px) rotateX(-180deg);
   @apply z-20;
 }
 
@@ -252,8 +264,8 @@ onMounted(startClock)
 /* 翻页动画 */
 .flip.up.go .front:after {
   transform-origin: 50% 0;
-  animation: frontFlipUp 0.6s ease-in-out both;
   backface-visibility: hidden;
+  animation: frontFlipUp 0.6s ease-in-out both;
   @apply shadow-xl;
 }
 
